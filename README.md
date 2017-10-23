@@ -1,5 +1,5 @@
-backend-web-dev
+# backend-web-dev
 
-this is a sweet readme file
+A repository for Team 1's website frontend.
 
-I love readmes
+Let's make a great project!
