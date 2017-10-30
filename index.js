@@ -18,6 +18,11 @@ app.use(function(req, res, next) { // allows local requests (ie during developme
 	next();
 });
 
+app.route('/users')
+	.get(function(req, res){
+		
+	})
+
 
 app.route('/events')
 	.get(function(req, res) {
