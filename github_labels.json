@@ -1,0 +1,16 @@
+[
+  { "name": "Status: Completed", "color": "#2f4ae2" },
+  { "name": "Status: Blocked", "color": "#d20000" },
+  { "name": "Status: Available", "color": "#04ba88" },
+  { "name": "Status: Accepted", "color": "#04ba07" },
+  { "name": "Status: Abandoned", "color": "#656464" },
+  { "name": "Status: In Progress", "color": "#cc317c" },
+  { "name": "Status: On Hold", "color": "#E69F00" },
+  { "name": "Type: Bug", "color": "#d55e00" },
+  { "name": "Type: Enhancement", "color": "#97c7f1" },
+  { "name": "Type: Maintenance", "color": "#d2d7bb" },
+  { "name": "Priority: Critical", "color": "#ff0000" },
+  { "name": "Priority: High", "color": "#fd720f" },
+  { "name": "Priority: Low", "color": "#b6ad31" },
+  { "name": "Priority: Medium", "color": "#f0e442" }
+]
