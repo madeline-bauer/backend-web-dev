@@ -1,0 +1,22 @@
+{
+  "name": "backend-web-dev",
+  "version": "1.0.0",
+  "description": "FUCIC backend from Team 1",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madeline-bauer/backend-web-dev.git"
+  },
+  "author": "FU CSC 342 Team 1",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/madeline-bauer/backend-web-dev/issues"
+  },
+  "homepage": "https://github.com/madeline-bauer/backend-web-dev#readme",
+  "dependencies": {
+    "express": "4.16.2",
+    "install": "0.10.1",
+    "mongodb": "2.2.33"
+  }
+}
