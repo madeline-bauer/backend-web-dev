@@ -21,7 +21,27 @@ app.use(function(req, res, next) { // allows local requests (ie during developme
 
 app.route('/users')
 	.get(function(req, res){
-		
+		var collection = 'users';
+		var id;
+		if (req.query.userId !== undefined || req.get('userId') !== undefined){
+			if (req.query.userId !== undefined){
+				id = req.query.userId;
+			} else if (req.get('userId') !== undefined){
+				id = req.get('userId');
+			}
+			id = new ObjectId(id); // ?id=<objectId>
+			searchDb(collection, {_id: id}, function(result){
+				res.json(result);
+			})
+		} else if (req.query.name !== undefined){ // ?name=<name>
+			searchDb(collection, {name: req.query.name}, function(result){
+				res.json(result);
+			})
+		} else {
+			searchDb(collection, {}, function(result){
+				res.json(result);
+			});
+		}
 	})
 
 
@@ -79,6 +99,7 @@ function searchDb(collection, query, callback){ // runs a query against the spec
 		db.collection(collection).find(query).toArray(function(err, result) {
 			if (err) throw err;
 			db.close();
+			console.log('result' + result);
 			return callback(result);
 		});
 	});
