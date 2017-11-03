@@ -1,3 +1,4 @@
+// imports
 var express = require('express');
 var mongo = require('mongodb').MongoClient, assert = require('assert');
 var ObjectId = require('mongodb').ObjectId;
@@ -6,10 +7,12 @@ var ObjectId = require('mongodb').ObjectId;
 // Connection URL
 var uri = require('./mongoDbUri.js').uri;
 
+//console.log(require('./authorization.js').authorized('hello'))
+
 // express app
 var app = express();
 
-app.use(function(req, res, next) { // allows local requests (ie during development)
+app.use(function(req, res, next) { // allows local requests (ie during development) // remove for production
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -51,7 +54,7 @@ app.route('/events')
 		// if (name === undefined || description === undefined || host === undefined || when === undefined){ // check to make sure all fields are defined
 		// 	res.status(400).send('All fields required');
 		// 	return; // stop processing, do not attempt to insert data into db
-		// } 
+		// }
 		var obj = new Object();
 		obj.name = name;
 		obj.description = description;
