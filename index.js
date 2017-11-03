@@ -4,9 +4,7 @@ var ObjectId = require('mongodb').ObjectId;
 
 
 // Connection URL
-var uri = "mongodb://admin:137d995329ac698bda11808513e1a67d4f5066afeacce716dfa4353ffe72f15a@fucic-shard-00-00-thb1l.mongodb.net:27017,fucic-shard-00-01-thb1l.mongodb.net:27017,fucic-shard-00-02-thb1l.mongodb.net:27017/csc342_HW5?ssl=true&replicaSet=FUCIC-shard-0&authSource=admin" //FIXME // contains plaintext password
-
-
+var uri = require('./mongoDbUri.js').uri;
 
 // express app
 var app = express();
