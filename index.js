@@ -2,6 +2,9 @@
 var express = require('express');
 var mongo = require('mongodb').MongoClient, assert = require('assert');
 var ObjectId = require('mongodb').ObjectId;
+var dbOps = require('./dbOperations.js'); // our db utility library
+// var reqOps = require('./reqOperations.js'); // out req utility library // DELETEME // currently unused 
+var debug = require('./debugMode.js').debug; // check for debug mode
 
 
 // Connection URL
@@ -19,49 +22,51 @@ app.use(function(req, res, next) { // allows local requests (ie during developme
 	next();
 });
 
-app.route('/users')
-	.get(function(req, res){
-		var collection = 'users';
-		var id;
-		if (req.query.userId !== undefined || req.get('userId') !== undefined){
-			if (req.query.userId !== undefined){
-				id = req.query.userId;
-			} else if (req.get('userId') !== undefined){
-				id = req.get('userId');
-			}
-			id = new ObjectId(id); // ?id=<objectId>
-			searchDb(collection, {_id: id}, function(result){
-				res.json(result);
-			})
-		} else if (req.query.name !== undefined){ // ?name=<name>
-			searchDb(collection, {name: req.query.name}, function(result){
-				res.json(result);
-			})
-		} else {
-			searchDb(collection, {}, function(result){
-				res.json(result);
-			});
+app.use(function(req, res, next){ // sanitize all requests
+	if ((id = req.query._id) !== undefined){
+		id = new ObjectId(id);
+		req.query._id = id;
+	}
+	if ((approved = req.query.approved) !== undefined){
+		if (approved == 'true'){
+			req.query.approved = true;
+		} else if (approved == 'false'){
+			req.query.approved = false;
 		}
+	}
+	next();
+})
+
+app.route('/applications')
+	.get(function(req, res){
+		var collection = 'applications';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
 	})
 
+app.route('/attachments')
+	.get(function(req, res){
+		var collection = 'attachments';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+
+app.route('/courses')
+	.get(function(req, res){
+		var collection = 'courses';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
 
 app.route('/events')
-	.get(function(req, res) {
+	.get(function(req, res){
 		var collection = 'events';
-		if (req.query.eventId !== undefined){
-			var id = new ObjectId(req.query.eventId); // ?id=<objectId>
-			searchDb(collection, {_id: id}, function(result){
-				res.json(result);
-			})
-		} else if (req.query.name !== undefined){ // ?name=<name>
-			searchDb(collection, {name: req.query.name}, function(result){
-				res.json(result);
-			})
-		} else {
-			searchDb(collection, {}, function(result){
-				res.json(result);
-			});
-		}
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
 	})
 	.post(function(req, res) {
 		var collection = 'events';
@@ -86,33 +91,38 @@ app.route('/events')
 		});
 	})
 
+app.route('/jobs')
+	.get(function(req, res){
+		var collection = 'jobs';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+
+app.route('/partnerships')
+	.get(function(req, res){
+		var collection = 'partnerships';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+
+app.route('/posts')
+	.get(function(req, res){
+		var collection = 'posts';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+
+app.route('/users')
+	.get(function(req, res){
+		var collection = 'users';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+
 app.use(express.static('public')) // serve static files in public folder
 
 app.listen(3000) // start listening on port number
-
-// utility functions
-function searchDb(collection, query, callback){ // runs a query against the specified mongodb collection // returns the value as a callback
-	// Use connect method to connect to the server
-	mongo.connect(uri, function(err, db) {
-		assert.equal(null, err);
-		//console.log("Connected successfully to MongoDB server");
-		db.collection(collection).find(query).toArray(function(err, result) {
-			if (err) throw err;
-			db.close();
-			console.log('result' + result);
-			return callback(result);
-		});
-	});
-}
-
-function addDb(collection, obj, callback){ // runs a query against the specified mongodb collection // returns the value as a callback
-	mongo.connect(uri, function(err, db) {
-	  if (err) throw err;
-	  db.collection(collection).insertOne(obj, function(err, res) {
-	    if (err) throw err;
-	    var status = 200; // no err
-	    db.close();
-	    return callback(status)
-	  });
-	}); 
-}
