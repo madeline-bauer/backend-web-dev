@@ -3,7 +3,7 @@ var express = require('express');
 var mongo = require('mongodb').MongoClient, assert = require('assert');
 var ObjectId = require('mongodb').ObjectId;
 var dbOps = require('./dbOperations.js'); // our db utility library
-// var reqOps = require('./reqOperations.js'); // out req utility library // DELETEME // currently unused 
+var reqOps = require('./reqOperations.js'); // out req utility library // DELETEME // currently unused 
 var debug = require('./debugMode.js').debug; // check for debug mode
 
 
@@ -71,24 +71,20 @@ app.route('/events')
 	.post(function(req, res) {
 		var collection = 'events';
 		//need both req.query.name && headers. depends on how request is sent
-		var name = req.get('name');
-		var description = req.get('description');
-		var host = req.get('host');
-		var when = req.get('when');
+		var obj = new Object();
+		obj.name = req.get('name');
+		obj.description = req.get('description');
+		obj.host = req.get('host');
+		obj.when = req.get('when');
 		// fix error checking
 		// if (name === undefined || description === undefined || host === undefined || when === undefined){ // check to make sure all fields are defined
 		// 	res.status(400).send('All fields required');
 		// 	return; // stop processing, do not attempt to insert data into db
 		// }
-		var obj = new Object();
-		obj.name = name;
-		obj.description = description;
-		obj.host = host;
-		obj.when = when;
 		console.log(obj);
-		addDb(collection, obj, function(status){
-			res.sendStatus(status);
-		});
+		// addDb(collection, obj, function(status){
+		// 	res.sendStatus(status);
+		// });
 	})
 
 app.route('/jobs')
@@ -115,9 +111,25 @@ app.route('/posts')
 		});
 	})
 
+app.route('/resources')
+	.get(function(req, res){
+		var collection = 'resources';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+
 app.route('/users')
 	.get(function(req, res){
 		var collection = 'users';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+
+app.route('/siteContent')
+	.get(function(req, res){
+		var collection = 'siteContent';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
