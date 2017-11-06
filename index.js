@@ -32,6 +32,7 @@ app.use(function(req, res, next){ // sanitize all requests
 			req.query.approved = true;
 		} else if (approved == 'false'){
 			req.query.approved = false;
+			res.status(401).send('Unauthorized, are you logged in?');
 		}
 	}
 	next();
@@ -72,10 +73,11 @@ app.route('/events')
 		var collection = 'events';
 		//need both req.query.name && headers. depends on how request is sent
 		var obj = new Object();
-		obj.name = req.get('name');
-		obj.description = req.get('description');
-		obj.host = req.get('host');
-		obj.when = req.get('when');
+		console.log(JSON.stringify(req.query));
+		obj.name = req.query.name;
+		obj.description = req.query.description;
+		obj.host = req.query.host;
+		obj.when = req.query.when;
 		// fix error checking
 		// if (name === undefined || description === undefined || host === undefined || when === undefined){ // check to make sure all fields are defined
 		// 	res.status(400).send('All fields required');
