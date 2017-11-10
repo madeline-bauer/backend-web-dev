@@ -3,7 +3,7 @@ var express = require('express');
 var mongo = require('mongodb').MongoClient, assert = require('assert');
 var ObjectId = require('mongodb').ObjectId;
 var dbOps = require('./dbOperations.js'); // our db utility library
-// var reqOps = require('./reqOperations.js'); // out req utility library // DELETEME // currently unused 
+var reqOps = require('./reqOperations.js'); // out req utility library // DELETEME // currently unused 
 var debug = require('./debugMode.js').debug; // check for debug mode
 
 
@@ -14,6 +14,7 @@ var uri = require('./mongoDbUri.js').uri;
 
 // express app
 var app = express();
+console.log('api running on port 3000')
 
 app.use(function(req, res, next) { // allows local requests (ie during development) // remove for production
 	res.header("Access-Control-Allow-Origin", "*");
@@ -21,6 +22,9 @@ app.use(function(req, res, next) { // allows local requests (ie during developme
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });
+
+app.use(express.json());       // to support JSON-encoded bodies
+app.use(express.urlencoded()); // to support URL-encoded bodies
 
 app.use(function(req, res, next){ // sanitize all requests
 	if ((id = req.query._id) !== undefined){
@@ -32,6 +36,7 @@ app.use(function(req, res, next){ // sanitize all requests
 			req.query.approved = true;
 		} else if (approved == 'false'){
 			req.query.approved = false;
+			res.status(401).send('Unauthorized, are you logged in?');
 		}
 	}
 	next();
@@ -71,22 +76,19 @@ app.route('/events')
 	.post(function(req, res) {
 		var collection = 'events';
 		//need both req.query.name && headers. depends on how request is sent
-		var name = req.get('name');
-		var description = req.get('description');
-		var host = req.get('host');
-		var when = req.get('when');
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query))
+		console.log('body: ' + JSON.stringify(req.body));
+		obj.name = req.body.name;
+		obj.description = req.body.description;
+		obj.host = req.body.host;
+		obj.when = req.body.when;
 		// fix error checking
 		// if (name === undefined || description === undefined || host === undefined || when === undefined){ // check to make sure all fields are defined
 		// 	res.status(400).send('All fields required');
 		// 	return; // stop processing, do not attempt to insert data into db
 		// }
-		var obj = new Object();
-		obj.name = name;
-		obj.description = description;
-		obj.host = host;
-		obj.when = when;
-		console.log(obj);
-		addDb(collection, obj, function(status){
+		dbOps.insert(uri, collection, obj, function(status){
 			res.sendStatus(status);
 		});
 	})
@@ -115,9 +117,25 @@ app.route('/posts')
 		});
 	})
 
+app.route('/resources')
+	.get(function(req, res){
+		var collection = 'resources';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+
 app.route('/users')
 	.get(function(req, res){
 		var collection = 'users';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+
+app.route('/siteContent')
+	.get(function(req, res){
+		var collection = 'siteContent';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
