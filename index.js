@@ -14,6 +14,7 @@ var uri = require('./mongoDbUri.js').uri;
 
 // express app
 var app = express();
+console.log('api running on port 3000')
 
 app.use(function(req, res, next) { // allows local requests (ie during development) // remove for production
 	res.header("Access-Control-Allow-Origin", "*");
@@ -21,6 +22,9 @@ app.use(function(req, res, next) { // allows local requests (ie during developme
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });
+
+app.use(express.json());       // to support JSON-encoded bodies
+app.use(express.urlencoded()); // to support URL-encoded bodies
 
 app.use(function(req, res, next){ // sanitize all requests
 	if ((id = req.query._id) !== undefined){
@@ -73,20 +77,20 @@ app.route('/events')
 		var collection = 'events';
 		//need both req.query.name && headers. depends on how request is sent
 		var obj = new Object();
-		console.log(JSON.stringify(req.query));
-		obj.name = req.query.name;
-		obj.description = req.query.description;
-		obj.host = req.query.host;
-		obj.when = req.query.when;
+		console.log('query: ' + JSON.stringify(req.query))
+		console.log('body: ' + JSON.stringify(req.body));
+		obj.name = req.body.name;
+		obj.description = req.body.description;
+		obj.host = req.body.host;
+		obj.when = req.body.when;
 		// fix error checking
 		// if (name === undefined || description === undefined || host === undefined || when === undefined){ // check to make sure all fields are defined
 		// 	res.status(400).send('All fields required');
 		// 	return; // stop processing, do not attempt to insert data into db
 		// }
-		console.log(obj);
-		// addDb(collection, obj, function(status){
-		// 	res.sendStatus(status);
-		// });
+		dbOps.insert(uri, collection, obj, function(status){
+			res.sendStatus(status);
+		});
 	})
 
 app.route('/jobs')
