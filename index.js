@@ -10,7 +10,6 @@ var debug = require('./debugMode.js').debug; // check for debug mode
 // Connection URL
 var uri = require('./mongoDbUri.js').uri;
 
-//console.log(require('./authorization.js').authorized('hello'))
 
 // express app
 var app = express();
@@ -25,6 +24,12 @@ app.use(function(req, res, next) { // allows local requests (ie during developme
 
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
+app.use(function(req, res, next){
+	req.key = '4PKLxIXGxBY3ML7Hn7r1Zwwk0t80XlUY'; // DEBUG ONLY // adding a dummy session key while we don't have one
+	var auth = require('./authorization.js');
+	req.auths = auth.authorized(req);
+	next();
+})
 
 app.use(function(req, res, next){ // sanitize all requests
 	if ((id = req.query._id) !== undefined){
@@ -44,6 +49,9 @@ app.use(function(req, res, next){ // sanitize all requests
 
 app.route('/applications')
 	.get(function(req, res){
+		if (req.auths.getApplication == false){
+			res.status(503).send('Unauthorized, are you logged in?');
+		}
 		var collection = 'applications';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
@@ -83,11 +91,8 @@ app.route('/events')
 		obj.description = req.body.description;
 		obj.host = req.body.host;
 		obj.when = req.body.when;
-		// fix error checking
-		// if (name === undefined || description === undefined || host === undefined || when === undefined){ // check to make sure all fields are defined
-		// 	res.status(400).send('All fields required');
-		// 	return; // stop processing, do not attempt to insert data into db
-		// }
+		obj = new Object();
+		obj.tags = {tag1: true, tag2: false};
 		dbOps.insert(uri, collection, obj, function(status){
 			res.sendStatus(status);
 		});
