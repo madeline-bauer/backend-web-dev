@@ -25,7 +25,7 @@ module.exports = {
 	},
 	insert: function(uri, collection, obj, callback){ // runs a query against the specified mongodb collection // returns the value as a callback
 		if (allowInserts == false){
-			return callback(423); // LOCKED // insertions are not allowed as per debug mode
+			return callback(423); // locked: insertions are not allowed as per debug mode
 		}
 		mongo.connect(uri, function(err, db) {
 			if (err) throw err;
