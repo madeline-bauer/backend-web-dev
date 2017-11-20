@@ -1,7 +1,3 @@
-// config
-var port = 3000; // port that express runs on
-var unauthorizedMessage = 'Unauthorized: are you logged in?';
-
 // imports
 var express = require('express');
 var mongo = require('mongodb').MongoClient, assert = require('assert');
@@ -9,14 +5,15 @@ var ObjectId = require('mongodb').ObjectId;
 var dbOps = require('./dbOperations.js'); // our db utility library
 var reqOps = require('./reqOperations.js'); // out req utility library // DELETEME // currently unused 
 var debug = require('./debugMode.js').debug; // check for debug mode
-var verbose = require('./debugMode.js').verbose; // check for verbose logging
+
 
 // Connection URL
 var uri = require('./mongoDbUri.js').uri;
 
+
 // express app
 var app = express();
-console.log(`api running on port ${port}`);
+console.log('api running on port 3000')
 
 app.use(function(req, res, next) { // allows local requests (ie during development) // remove for production
 	res.header("Access-Control-Allow-Origin", "*");
@@ -25,9 +22,8 @@ app.use(function(req, res, next) { // allows local requests (ie during developme
 	next();
 });
 
-app.use(express.json()); // to support JSON-encoded bodies
-app.use(express.urlencoded({extended: true})); // to support URL-encoded bodies
-
+app.use(express.json());       // to support JSON-encoded bodies
+app.use(express.urlencoded()); // to support URL-encoded bodies
 app.use(function(req, res, next){
 	req.key = '4PKLxIXGxBY3ML7Hn7r1Zwwk0t80XlUY'; // DEBUG ONLY // adding a dummy session key while we don't have one
 	var auth = require('./authorization.js');
@@ -45,7 +41,7 @@ app.use(function(req, res, next){ // sanitize all requests
 			req.query.approved = true;
 		} else if (approved == 'false'){
 			req.query.approved = false;
-			res.status(401).send(unauthorizedMessage);
+			res.status(401).send('Unauthorized, are you logged in?');
 		}
 	}
 	next();
@@ -54,7 +50,7 @@ app.use(function(req, res, next){ // sanitize all requests
 app.route('/applications')
 	.get(function(req, res){
 		if (req.auths.getApplication == false){
-			res.status(401).send(unauthorizedMessage);
+			res.status(503).send('Unauthorized, are you logged in?');
 		}
 		var collection = 'applications';
 		dbOps.find(uri, collection, req.query, function(result){
@@ -64,9 +60,6 @@ app.route('/applications')
 
 app.route('/attachments')
 	.get(function(req, res){
-		if (req.auths.getAttachments == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'attachments';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
@@ -75,9 +68,6 @@ app.route('/attachments')
 
 app.route('/courses')
 	.get(function(req, res){
-		if (req.auths.getCourses == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'courses';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
@@ -86,29 +76,23 @@ app.route('/courses')
 
 app.route('/events')
 	.get(function(req, res){
-		if (req.auths.getEvents == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'events';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
 	})
 	.post(function(req, res) {
-		if (req.auths.postEvents == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'events';
 		//need both req.query.name && headers. depends on how request is sent
 		var obj = new Object();
-		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
-		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		console.log('query: ' + JSON.stringify(req.query))
+		console.log('body: ' + JSON.stringify(req.body));
 		obj.name = req.body.name;
 		obj.description = req.body.description;
 		obj.host = req.body.host;
 		obj.when = req.body.when;
-		// obj = new Object();
-		console.log('tags: ' + JSON.stringify(req.body.tags));
+		obj = new Object();
+		obj.tags = {tag1: true, tag2: false};
 		dbOps.insert(uri, collection, obj, function(status){
 			res.sendStatus(status);
 		});
@@ -116,9 +100,6 @@ app.route('/events')
 
 app.route('/jobs')
 	.get(function(req, res){
-		if (req.auths.getJobs == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'jobs';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
@@ -127,9 +108,6 @@ app.route('/jobs')
 
 app.route('/partnerships')
 	.get(function(req, res){
-		if (req.auths.getPartnerships == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'partnerships';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
@@ -138,9 +116,6 @@ app.route('/partnerships')
 
 app.route('/posts')
 	.get(function(req, res){
-		if (req.auths.getPosts == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'posts';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
@@ -149,9 +124,6 @@ app.route('/posts')
 
 app.route('/resources')
 	.get(function(req, res){
-		if (req.auths.getResources == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'resources';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
@@ -160,9 +132,6 @@ app.route('/resources')
 
 app.route('/users')
 	.get(function(req, res){
-		if (req.auths.getUsers == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'users';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
@@ -171,9 +140,6 @@ app.route('/users')
 
 app.route('/siteContent')
 	.get(function(req, res){
-		if (req.auths.getSiteContent == false){
-			res.status(401).send(unauthorizedMessage);
-		}
 		var collection = 'siteContent';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
@@ -182,4 +148,4 @@ app.route('/siteContent')
 
 app.use(express.static('public')) // serve static files in public folder
 
-app.listen(port) // start listening on port number
+app.listen(3000) // start listening on port number

@@ -1,9 +1,5 @@
 var mongo = require('mongodb').MongoClient, assert = require('assert');
 var debug = require('./debugMode.js').debug;
-var allowInserts = true;
-if (debug == true){
-	allowInserts = require('./debugMode.js').allowInserts;
-}
 
 module.exports = {
 	find: function(uri, collection, query, callback){
@@ -24,13 +20,10 @@ module.exports = {
 		});
 	},
 	insert: function(uri, collection, obj, callback){ // runs a query against the specified mongodb collection // returns the value as a callback
-		if (allowInserts == false){
-			return callback(423); // locked: insertions are not allowed as per debug mode
-		}
 		mongo.connect(uri, function(err, db) {
 			if (err) throw err;
 			db.collection(collection).insertOne(obj, function(err, res) {
-				if (err) return callback(err);
+				if (err) throw err;
 				var status = 200; // no err
 				db.close();
 				return callback(status)
