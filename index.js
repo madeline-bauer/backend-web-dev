@@ -16,7 +16,7 @@ var uri = require('./mongoDbUri.js').uri;
 
 // express app
 var app = express();
-console.log(`api running on port ${port}`);
+console.log(`server running on port ${port}`);
 
 app.use(function(req, res, next) { // allows local requests (ie during development) // remove for production
 	res.header("Access-Control-Allow-Origin", "*");
