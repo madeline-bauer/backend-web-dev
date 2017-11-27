@@ -101,12 +101,20 @@ app.route('/events')
 		var collection = 'events';
 		//need both req.query.name && headers. depends on how request is sent
 		var obj = new Object();
-		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
-		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		if (debug == true){
+			console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+			console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		}
 		obj.name = req.body.name;
 		obj.description = req.body.description;
 		obj.host = req.body.host;
-		obj.when = req.body.when;
+		obj.hostUser = req.body.hostUser
+		obj.hostPartner = req.body.hostPartner;
+		obj.start = req.body.start;
+		obj.end = req.body.end;
+		obj.startTime = req.body.endTime;
+		obj.tags = req.body.tags;
+		obj.repeatsWeekly = req.body.repeatsWeekly;
 		// obj = new Object();
 		console.log('tags: ' + JSON.stringify(req.body.tags));
 		dbOps.insert(uri, collection, obj, function(status){
