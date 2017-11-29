@@ -60,6 +60,7 @@ app.route('/applications')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	})
 	.post(function(req, res) {
 		if (req.auths.postApplications == false){
 			res.status(401).send(unauthorizedMessage);
@@ -91,7 +92,8 @@ app.route('/attachments')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
-		.post(function(req, res) {
+	})
+	.post(function(req, res) {
 		if (req.auths.postAttachments == false){
 			res.status(401).send(unauthorizedMessage);
 		}
@@ -118,6 +120,7 @@ app.route('/courses')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	})
 	.post(function(req, res) {
 		if (req.auths.postCourses == false){
 			res.status(401).send(unauthorizedMessage);
@@ -189,6 +192,7 @@ app.route('/jobs')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	})
 	.post(function(req, res) {
 		if (req.auths.postJobs == false){
 			res.status(401).send(unauthorizedMessage);
@@ -220,7 +224,8 @@ app.route('/partnerships')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});	
-		.post(function(req, res) {
+	})
+	.post(function(req, res) {
 		if (req.auths.postPartnerships == false){
 			res.status(401).send(unauthorizedMessage);
 		}
@@ -248,6 +253,7 @@ app.route('/posts')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	})
 	.post(function(req, res) {
 		if (req.auths.postPosts == false){
 			res.status(401).send(unauthorizedMessage);
@@ -279,6 +285,7 @@ app.route('/resources')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	})
 	.post(function(req, res) {
 		if (req.auths.postResources == false){
 			res.status(401).send(unauthorizedMessage);
@@ -307,6 +314,7 @@ app.route('/users')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	})
 	.post(function(req, res) {
 		if (req.auths.postUsers == false){
 			res.status(401).send(unauthorizedMessage);
@@ -335,6 +343,7 @@ app.route('/siteContent')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	})
 	.post(function(req, res) {
 		if (req.auths.postPartnerships == false){
 			res.status(401).send(unauthorizedMessage);
