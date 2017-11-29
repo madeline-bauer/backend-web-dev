@@ -16,7 +16,7 @@ var uri = require('./mongoDbUri.js').uri;
 
 // express app
 var app = express();
-console.log(`server running on port ${port}`);
+console.log(`api running on port ${port}`);
 
 app.use(function(req, res, next) { // allows local requests (ie during development) // remove for production
 	res.header("Access-Control-Allow-Origin", "*");
@@ -53,12 +53,32 @@ app.use(function(req, res, next){ // sanitize all requests
 
 app.route('/applications')
 	.get(function(req, res){
-		if (req.auths.getApplication == false){
+		if (req.auths.getApplications == false){
 			res.status(401).send(unauthorizedMessage);
 		}
 		var collection = 'applications';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
+		});
+	.post(function(req, res) {
+		if (req.auths.postApplications == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'applications';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.refType = req.body.refType;
+		obj.refId = req.body.refId;
+		obj.fromType = req.body.fromType;
+		obj.fromId = req.body.fromId;
+		obj.approved = req.body.approved;
+		obj.attachments = req.body.attachments;
+		obj.date = req.body.date;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+		res.sendStatus(status);
 		});
 	})
 
@@ -71,6 +91,22 @@ app.route('/attachments')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+		.post(function(req, res) {
+		if (req.auths.postAttachments == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'attachments';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.name = req.body.name;
+		obj.data = req.body.data;
+		obj.type = req.body.type;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+		res.sendStatus(status);
+		});
 	})
 
 app.route('/courses')
@@ -81,6 +117,28 @@ app.route('/courses')
 		var collection = 'courses';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
+		});
+	.post(function(req, res) {
+		if (req.auths.postCourses == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'courses';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.name = req.body.name;
+		obj.profname = ref.body.profname;
+		obj.profid = ref.body.profid;
+		obj.description = req.body.description;
+		obj.when = req.body.when;
+		obj.approved = req.body.approved;
+		obj.postdate = req.body.postdate;
+		obj.credit = req.body.credit;
+		obj.type = req.body.type;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+			res.sendStatus(status);
 		});
 	})
 
@@ -131,6 +189,26 @@ app.route('/jobs')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	.post(function(req, res) {
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'jobs';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.name = req.body.name;
+		obj.description = req.body.description;
+		obj.company = req.body.company;
+		obj.time = req.body.time;
+		obj.pay = req.body.pay;
+		obj.credit = req.body.credit;
+		obj.approved = req.body.approved;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+			res.sendStatus(status);
+		});
 	})
 
 app.route('/partnerships')
@@ -141,6 +219,23 @@ app.route('/partnerships')
 		var collection = 'partnerships';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
+		});	
+		.post(function(req, res) {
+		if (req.auths.postPartnerships == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'partnerships';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.name = req.body.name;
+		obj.description = req.body.description;
+		obj.website = req.body.website;
+		obj.approved = req.body.approved;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+			res.sendStatus(status);
 		});
 	})
 
@@ -153,6 +248,26 @@ app.route('/posts')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	.post(function(req, res) {
+		if (req.auths.postPosts == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'posts';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.title = req.body.title;
+		obj.text = req.body.text;
+		obj.postdate = req.body.postdate;
+		obj.tags = req.body.tags;
+		obj.authorId = req.body.authorId;
+		obj.authorName = req.body.authorName;
+		obj.approved = req.body.approved;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+			res.sendStatus(status);
+		});
 	})
 
 app.route('/resources')
@@ -163,6 +278,23 @@ app.route('/resources')
 		var collection = 'resources';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
+		});
+	.post(function(req, res) {
+		if (req.auths.postResources == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'resources';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.title = req.body.title;
+		obj.description = req.body.description;
+		obj.target = req.body.target;
+		obj.type = req.body.type;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+			res.sendStatus(status);
 		});
 	})
 
@@ -175,6 +307,23 @@ app.route('/users')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	.post(function(req, res) {
+		if (req.auths.postUsers == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'users';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.username = req.body.name;
+		obj.email = req.body.email;
+		obj.firstname = req.body.firstname;
+		obj.lastname = req.body.lastname;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+			res.sendStatus(status);
+		});
 	})
 
 app.route('/siteContent')
@@ -186,6 +335,23 @@ app.route('/siteContent')
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
 		});
+	.post(function(req, res) {
+		if (req.auths.postPartnerships == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'partnerships';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.name = req.body.name;
+			obj.description = req.body.description;
+			obj.website = req.body.website;
+			obj.approved = req.body.approved;
+			console.log('tags: ' + JSON.stringify(req.body.tags));
+			dbOps.insert(uri, collection, obj, function(status){
+				res.sendStatus(status);
+			});
 	})
 
 app.use(express.static('public')) // serve static files in public folder
