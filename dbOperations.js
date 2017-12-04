@@ -29,5 +29,16 @@ module.exports = {
 				return callback(status)
 			});
 		}); 
+	},
+	delete: function(uri, colleciton, id, callback){
+		mongo.connect(uri, function(err, db) {
+			if (err) throw err;
+			db.collection(collection).deleteOne({_id: id}, function(err, res) {
+				if (err) throw err;
+				var status = 200; // no err
+				db.close();
+				return callback(status)
+			});
+		}); 
 	}
 }

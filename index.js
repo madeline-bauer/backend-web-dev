@@ -79,7 +79,7 @@ app.route('/applications')
 		obj.date = req.body.date;
 		console.log('tags: ' + JSON.stringify(req.body.tags));
 		dbOps.insert(uri, collection, obj, function(status){
-		res.sendStatus(status);
+			res.sendStatus(status);
 		});
 	})
 
@@ -274,6 +274,15 @@ app.route('/posts')
 		dbOps.insert(uri, collection, obj, function(status){
 			res.sendStatus(status);
 		});
+	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'applications';
+		dbOps.delete(uri, collection, id, function(status){
+			res.sendStatu(status);
+		})
 	})
 
 app.route('/resources')
