@@ -279,7 +279,7 @@ app.route('/posts')
 		if (req.auths.postJobs == false){
 			res.status(401).send(unauthorizedMessage);
 		}
-		var collection = 'applications';
+		var collection = 'posts';
 		dbOps.delete(uri, collection, req.body._id, function(status){
 			res.sendStatus(status);
 		})

@@ -1,6 +1,6 @@
 var mongo = require('mongodb').MongoClient, assert = require('assert');
 var debug = require('./debugMode.js').debug;
-var mongo = require('mongodb').MongoClient, assert = require('assert');
+var mongodb = require('mongodb');
 
 module.exports = {
 	find: function(uri, collection, query, callback){
@@ -35,7 +35,7 @@ module.exports = {
 		mongo.connect(uri, function(err, db) {
 			if (err) throw err;
 			console.log(id)
-			db.collection(collection).deleteOne({_id: new ObjectID(id)}, function(err, res) {
+			db.collection(collection).deleteOne({_id: id}, function(err, res) {
 				if (err) throw err;
 				var status = 200; // no err
 				db.close();
