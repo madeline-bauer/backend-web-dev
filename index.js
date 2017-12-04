@@ -36,9 +36,9 @@ app.use(function(req, res, next){
 })
 
 app.use(function(req, res, next){ // sanitize all requests
-	if ((_id = req.query._id) !== undefined){
+	if ((_id = req.body._id) !== undefined){
 		_id = new ObjectId(_id);
-		req.query._id = _id;
+		req.body._id = _id;
 	}
 	if ((approved = req.query.approved) !== undefined){
 		if (approved == 'true'){
@@ -280,8 +280,8 @@ app.route('/posts')
 			res.status(401).send(unauthorizedMessage);
 		}
 		var collection = 'applications';
-		dbOps.delete(uri, collection, id, function(status){
-			res.sendStatu(status);
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
 		})
 	})
 
