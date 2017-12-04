@@ -36,9 +36,9 @@ app.use(function(req, res, next){
 })
 
 app.use(function(req, res, next){ // sanitize all requests
-	if ((id = req.query._id) !== undefined){
-		id = new ObjectId(id);
-		req.query._id = id;
+	if ((_id = req.body._id) !== undefined){
+		_id = new ObjectId(_id);
+		req.body._id = _id;
 	}
 	if ((approved = req.query.approved) !== undefined){
 		if (approved == 'true'){
@@ -79,7 +79,7 @@ app.route('/applications')
 		obj.date = req.body.date;
 		console.log('tags: ' + JSON.stringify(req.body.tags));
 		dbOps.insert(uri, collection, obj, function(status){
-		res.sendStatus(status);
+			res.sendStatus(status);
 		});
 	})
 
@@ -274,6 +274,15 @@ app.route('/posts')
 		dbOps.insert(uri, collection, obj, function(status){
 			res.sendStatus(status);
 		});
+	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'posts';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
 	})
 
 app.route('/resources')
