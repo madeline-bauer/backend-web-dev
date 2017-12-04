@@ -82,6 +82,15 @@ app.route('/applications')
 			res.sendStatus(status);
 		});
 	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'applications';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
+	})
 
 app.route('/attachments')
 	.get(function(req, res){
@@ -109,6 +118,15 @@ app.route('/attachments')
 		dbOps.insert(uri, collection, obj, function(status){
 		res.sendStatus(status);
 		});
+	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'attachments';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
 	})
 
 app.route('/courses')
@@ -143,6 +161,15 @@ app.route('/courses')
 		dbOps.insert(uri, collection, obj, function(status){
 			res.sendStatus(status);
 		});
+	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'courses';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
 	})
 
 app.route('/events')
@@ -182,6 +209,15 @@ app.route('/events')
 			res.sendStatus(status);
 		});
 	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'events';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
+	})
 
 app.route('/jobs')
 	.get(function(req, res){
@@ -214,6 +250,15 @@ app.route('/jobs')
 			res.sendStatus(status);
 		});
 	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'jobs';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
+	})
 
 app.route('/partnerships')
 	.get(function(req, res){
@@ -242,6 +287,15 @@ app.route('/partnerships')
 		dbOps.insert(uri, collection, obj, function(status){
 			res.sendStatus(status);
 		});
+	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'partnerships';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
 	})
 
 app.route('/posts')
@@ -313,6 +367,15 @@ app.route('/resources')
 			res.sendStatus(status);
 		});
 	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'resources';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
+	})
 
 app.route('/users')
 	.get(function(req, res){
@@ -342,6 +405,15 @@ app.route('/users')
 			res.sendStatus(status);
 		});
 	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'users';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
+	})
 
 app.route('/siteContent')
 	.get(function(req, res){
@@ -370,6 +442,15 @@ app.route('/siteContent')
 			dbOps.insert(uri, collection, obj, function(status){
 				res.sendStatus(status);
 			});
+	})
+	.delete(function(req, res){
+		if (req.auths.postJobs == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'siteContent';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
 	})
 
 app.use(express.static('public')) // serve static files in public folder
