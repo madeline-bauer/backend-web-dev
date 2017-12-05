@@ -9,7 +9,6 @@ var ObjectId = require('mongodb').ObjectId;
 var dbOps = require('./dbOperations.js'); // our db utility library
 var reqOps = require('./reqOperations.js'); // out req utility library // DELETEME // currently unused 
 var debug = require('./debugMode.js').debug; // check for debug mode
-var verbose = require('./debugMode.js').verbose; // check for verbose logging
 
 // Connection URL
 var uri = require('./mongoDbUri.js').uri;
