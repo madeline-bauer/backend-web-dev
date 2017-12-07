@@ -17,9 +17,10 @@
   "dependencies": {
     "auth0-js": "^8.11.3",
     "express": "4.16.2",
+    "express-fileupload": "^0.3.0",
     "install": "0.10.1",
     "mongodb": "2.2.33",
-    "nodemon": "^1.12.4",
+    "nodemon": "^1.12.5",
     "qs": "^6.5.1"
   }
 }
