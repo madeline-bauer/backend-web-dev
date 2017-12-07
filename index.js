@@ -4,6 +4,7 @@ var unauthorizedMessage = 'Unauthorized: are you logged in?';
 
 // imports
 var express = require('express');
+var fileUpload = require('express-fileupload');
 var mongo = require('mongodb').MongoClient, assert = require('assert');
 var ObjectId = require('mongodb').ObjectId;
 var dbOps = require('./dbOperations.js'); // our db utility library
@@ -15,7 +16,7 @@ var uri = require('./mongoDbUri.js').uri;
 
 // express app
 var app = express();
-console.log(`api running on port ${port}`);
+app.use(fileUpload({safeFileNames: true}));
 
 app.use(function(req, res, next) { // allows local requests (ie during development) // remove for production
 	res.header("Access-Control-Allow-Origin", "*");
@@ -452,6 +453,20 @@ app.route('/siteContent')
 		})
 	})
 
+app.route('/upload')
+	.post(function(req, res){
+		if (req.files){
+			let file = req.files.upload;
+			file.mv(`./uploads/${file.name}`, function(err){
+				if (err) return res.status(500).json(err)
+				res.status(200).send('file uploaded');
+			});
+		} else {
+			res.status(501).send('no file included in request');
+		}
+	})
+
 app.use(express.static('public')) // serve static files in public folder
 
+console.log(`api running on port ${port}`);
 app.listen(port) // start listening on port number
