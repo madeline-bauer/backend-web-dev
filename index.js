@@ -456,6 +456,80 @@ app.route('/siteContent')
 		})
 	})
 
+app.route('/travel')
+	.get(function(req, res){
+		if (req.auths.getTravel == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'travel';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+	.post(function(req, res) {
+		if (req.auths.postTravel == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'travel';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.travel = req.body.travel;
+		obj.description = req.body.description;
+		obj.approved = req.body.approved;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+			res.sendStatus(status);
+		});
+	})
+	.delete(function(req, res){
+		if (req.auths.postTravel == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'Travel';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
+	})
+
+app.route('/awards')
+	.get(function(req, res){
+		if (req.auths.getAwards == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'awards';
+		dbOps.find(uri, collection, req.query, function(result){
+			res.json(result);
+		});
+	})
+	.post(function(req, res) {
+		if (req.auths.postAwards == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'awards';
+		//need both req.query.name && headers. depends on how request is sent
+		var obj = new Object();
+		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
+		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
+		obj.award = req.body.award;
+		obj.description = req.body.description;
+		obj.approved = req.body.approved;
+		console.log('tags: ' + JSON.stringify(req.body.tags));
+		dbOps.insert(uri, collection, obj, function(status){
+			res.sendStatus(status);
+		});
+	})
+	.delete(function(req, res){
+		if (req.auths.postAwards == false){
+			res.status(401).send(unauthorizedMessage);
+		}
+		var collection = 'awards';
+		dbOps.delete(uri, collection, req.body._id, function(status){
+			res.sendStatus(status);
+		})
+	})
+
 app.route('/upload')
 	.post(function(req, res){
 		if (req.files){
