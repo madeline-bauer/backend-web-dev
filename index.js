@@ -39,6 +39,9 @@ app.use(function(req, res, next){ // sanitize all requests
 	if ((_id = req.body._id) !== undefined){
 		_id = new ObjectId(_id);
 		req.body._id = _id;
+	} else if ((_id = req.query._id) !== undefined){
+		_id = new ObjectId(_id);
+		req.query._id = _id;
 	}
 	if ((approved = req.query.approved) !== undefined){
 		if (approved == 'true'){
