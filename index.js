@@ -514,6 +514,7 @@ app.route('/awards')
 		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
 		obj.award = req.body.award;
 		obj.description = req.body.description;
+		obj.recipient = req.body.recipient;
 		obj.approved = req.body.approved;
 		console.log('tags: ' + JSON.stringify(req.body.tags));
 		dbOps.insert(uri, collection, obj, function(status){
