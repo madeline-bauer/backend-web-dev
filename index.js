@@ -8,7 +8,7 @@ var fileUpload = require('express-fileupload');
 var mongo = require('mongodb').MongoClient, assert = require('assert');
 var ObjectId = require('mongodb').ObjectId;
 var dbOps = require('./dbOperations.js'); // our db utility library
-var reqOps = require('./reqOperations.js'); // out req utility library // DELETEME // currently unused 
+var reqOps = require('./reqOperations.js'); // out req utility library // DELETEME // currently unused
 var debug = require('./debugMode.js').debug; // check for debug mode
 
 // Connection URL
@@ -149,8 +149,8 @@ app.route('/courses')
 		console.log('query: ' + JSON.stringify(req.query)) // DEBUG
 		console.log('body: ' + JSON.stringify(req.body)); // DEBUG
 		obj.name = req.body.name;
-		obj.profname = ref.body.profname;
-		obj.profid = ref.body.profid;
+		obj.profname = req.body.profname;
+		obj.profid = req.body.profid;
 		obj.description = req.body.description;
 		obj.when = req.body.when;
 		obj.approved = req.body.approved;
@@ -268,7 +268,7 @@ app.route('/partnerships')
 		var collection = 'partnerships';
 		dbOps.find(uri, collection, req.query, function(result){
 			res.json(result);
-		});	
+		});
 	})
 	.post(function(req, res) {
 		if (req.auths.postPartnerships == false){
