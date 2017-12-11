@@ -4,7 +4,13 @@ var unauthorizedMessage = 'Unauthorized: are you logged in?';
 
 // imports
 var express = require('express');
-var fileUpload = require('express-fileupload');
+const nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+	service: 'gmail',
+	auth: {	  user: 'furmancinc@gmail.com',	  pass: 'password123!'	 } // TODO // make more secure
+});
+var fs = require('fs'); // for deleting files
+var fileUpload = require('express-fileupload'); // for handing uploaded files
 var mongo = require('mongodb').MongoClient, assert = require('assert');
 var ObjectId = require('mongodb').ObjectId;
 var dbOps = require('./dbOperations.js'); // our db utility library
@@ -16,7 +22,7 @@ var uri = require('./mongoDbUri.js').uri;
 
 // express app
 var app = express();
-app.use(fileUpload({safeFileNames: true}));
+app.use(fileUpload({safeFileNames: false}));
 
 app.use(function(req, res, next) { // allows local requests (ie during development) // remove for production
 	res.header("Access-Control-Allow-Origin", "*");
@@ -536,8 +542,33 @@ app.route('/upload')
 		if (req.files){
 			let file = req.files.upload;
 			file.mv(`./uploads/${file.name}`, function(err){
-				if (err) return res.status(500).json(err)
-				res.status(200).send('file uploaded');
+				if (err) return res.status(500).json(err);
+				const mailOptions = {
+					from: 'furmancinc@gmail.com', // sender address
+					to: 'furmancinc@gmail.com', // list of receivers
+					subject: 'New CinC Upload!', // Subject line
+					html: '<p>See the attached upload!</p>',// plain text body
+					attachments: [{
+						filename: file.name,
+						path: `./uploads/${file.name}`
+					}]
+				};
+				transporter.sendMail(mailOptions, function (err, info) {
+					if (err){
+				  		console.log(err)
+					} else {
+						res.status(200).json('File sent');
+						fs.unlink(`./uploads/${file.name}`, function(err){
+							if(err && err.code == 'ENOENT') { // file doesn't exist
+						        console.info("File doesn't exist, won't remove it.");
+						    } else if (err) { // other errors
+						        console.error("Error occurred while trying to remove file");
+						    } else {
+						        return;
+						    }
+						});
+					}
+				});
 			});
 		} else {
 			res.status(501).send('no file included in request');
