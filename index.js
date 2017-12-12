@@ -557,14 +557,13 @@ app.route('/upload')
 					if (err){
 				  		console.log(err)
 					} else {
-						res.status(200).json('File sent');
 						fs.unlink(`./uploads/${file.name}`, function(err){
 							if(err && err.code == 'ENOENT') { // file doesn't exist
 						        console.info("File doesn't exist, won't remove it.");
 						    } else if (err) { // other errors
 						        console.error("Error occurred while trying to remove file");
 						    } else {
-						        return;
+								return res.redirect('/');
 						    }
 						});
 					}
